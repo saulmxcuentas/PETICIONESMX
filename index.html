@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peticiones de Contenido</title>
+    <style>
+        :root {
+            /* Paleta de colores para Emby */
+            --emby-primary: #52B54B; /* Verde Emby */
+            --emby-primary-hover: #3D8B37;
+            --emby-secondary: #6C5CE7; /* Morado */
+            --emby-secondary-hover: #5649C0;
+            --emby-accent: #00B894; /* Verde agua */
+            --emby-accent-hover: #00A383;
+            
+            /* Paleta de colores para Jellyfin */
+            --jellyfin-primary: #6C5CE7; /* Morado */
+            --jellyfin-primary-hover: #5649C0;
+            --jellyfin-secondary: #FDCB6E; /* Amarillo */
+            --jellyfin-secondary-hover: #E1B95E;
+            --jellyfin-accent: #FD79A8; /* Rosa */
+            --jellyfin-accent-hover: #E84393;
+            
+            /* Colores base */
+            --dark-color: #2D3436;
+            --darker-color: #1E272E;
+            --light-color: #F5F6FA;
+            --gray-color: #636E72;
+            --light-gray: #DFE6E9;
+            
+            /* Variables de diseño */
+            --radius-large: 16px;
+            --radius-medium: 12px;
+            --radius-small: 8px;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Estilos base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background-color: var(--darker-color);
+            color: var(--light-color);
+            line-height: 1.6;
+            font-size: 16px;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 20px;
+            width: 100%;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--emby-primary), var(--jellyfin-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .header::after {
+            content: "";
+            display: block;
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--emby-primary), var(--jellyfin-primary));
+            margin: 0 auto;
+            border-radius: 2px;
+            margin-top: 15px;
+        }
+
+        .header p {
+            color: var(--light-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            margin-top: 15px;
+        }
+
+        /* Panel de peticiones */
+        .peticiones-btn {
+            background: linear-gradient(90deg, var(--emby-primary), var(--jellyfin-primary));
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(82, 181, 75, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .peticiones-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(82, 181, 75, 0.4);
+        }
+
+        .peticiones-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .peticiones-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .peticiones-btn:hover::before {
+            left: 100%;
+        }
+
+        .contenedor-peticiones {
+            display: none;
+            background: var(--dark-color);
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .contenedor-peticiones.active {
+            display: block;
+        }
+
+        .buscador {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-medium);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--light-color);
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+
+        .buscador:focus {
+            border-color: var(--emby-primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(82, 181, 75, 0.2);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .resultados {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .item {
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(45, 52, 54, 0.7);
+            border-radius: var(--radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            border-color: var(--emby-primary);
+        }
+
+        .portada-contenedor {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            min-height: 225px;
+        }
+
+        .portada {
+            width: 100%;
+            height: auto;
+            max-height: 225px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .info {
+            padding: 12px;
+            color: white;
+            background: rgba(30, 39, 46, 0.8);
+        }
+
+        .titulo {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .detalles {
+            color: var(--light-gray);
+            font-size: 0.8rem;
+            margin: 5px 0 0 0;
+        }
+
+        .plataformas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .plataforma {
+            background: rgba(108, 92, 231, 0.2);
+            color: var(--jellyfin-primary);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .solicitar-btn {
+            background: linear-gradient(90deg, var(--emby-primary), var(--jellyfin-primary));
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 0 0 var(--radius-medium) var(--radius-medium);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .solicitar-btn:hover {
+            opacity: 0.9;
+        }
+
+        .mensaje-carga {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--light-gray);
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-medium);
+        }
+
+        /* Animación de carga */
+        .loading {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--emby-primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+
+        .loading-text {
+            color: var(--light-gray);
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--emby-primary), var(--jellyfin-primary));
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            width: 100%;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .resultados {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .peticiones-btn {
+                padding: 14px 25px;
+                font-size: 1rem;
+            }
+            
+            .resultados {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: 15px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .peticiones-btn {
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+            
+            .resultados {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+        }
+
+        @media (max-width: 400px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .resultados {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-film"></i> Peticiones de Contenido</h1>
+            <p>Busca y solicita películas y series para agregar a nuestro catálogo</p>
+        </div>
+
+        <!-- Panel de Peticiones -->
+        <button class="peticiones-btn" id="peticionesBtn">
+            <i class="fas fa-film"></i> Peticiones de Contenido
+        </button>
+        
+        <div class="contenedor-peticiones" id="contenedorPeticiones">
+            <input type="text" class="buscador" id="buscador" placeholder="Buscar películas y series...">
+            <div class="resultados" id="resultados"></div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 Sistema de Peticiones de Contenido</p>
+        </div>
+    </div>
+
+    <script>
+        // Clase para manejar el panel de peticiones
+        class PeticionesPanel {
+            constructor() {
+                this.apiKey = 'e22418df765186e2208cf44bef9e3bd2';
+                this.peticionesBtn = document.getElementById('peticionesBtn');
+                this.contenedorPeticiones = document.getElementById('contenedorPeticiones');
+                this.buscador = document.getElementById('buscador');
+                this.resultados = document.getElementById('resultados');
+                this.timeoutId = null;
+                this.whatsappNumber = '5567416073';
+                
+                this.init();
+            }
+            
+            init() {
+                // Configurar eventos
+                this.peticionesBtn.addEventListener('click', () => {
+                    this.contenedorPeticiones.classList.toggle('active');
+                    // Si se abre el panel, enfocar el buscador
+                    if (this.contenedorPeticiones.classList.contains('active')) {
+                        setTimeout(() => {
+                            this.buscador.focus();
+                        }, 300);
+                    }
+                });
+                
+                this.buscador.addEventListener('input', () => {
+                    this.buscarContenido();
+                });
+                
+                // Cerrar panel al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!this.contenedorPeticiones.contains(e.target) && 
+                        e.target !== this.peticionesBtn && 
+                        !this.peticionesBtn.contains(e.target)) {
+                        this.contenedorPeticiones.classList.remove('active');
+                    }
+                });
+            }
+            
+            buscarContenido() {
+                clearTimeout(this.timeoutId);
+                
+                const query = this.buscador.value.trim();
+                
+                if (query.length < 3) {
+                    this.resultados.innerHTML = '';
+                    return;
+                }
+                
+                this.timeoutId = setTimeout(() => {
+                    this.realizarBusqueda(query);
+                }, 500);
+            }
+            
+            async realizarBusqueda(query) {
+                this.resultados.innerHTML = '<div class="mensaje-carga"><div class="loading"></div><p class="loading-text">Buscando contenido...</p></div>';
+                
+                try {
+                    const url = `https://api.themoviedb.org/3/search/multi?api_key=${this.apiKey}&query=${encodeURIComponent(query)}&language=es-MX`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.results && data.results.length > 0) {
+                        this.mostrarResultados(data.results);
+                    } else {
+                        this.resultados.innerHTML = '<div class="mensaje-carga">No se encontraron resultados.</div>';
+                    }
+                } catch (error) {
+                    console.error('Error al buscar contenido:', error);
+                    this.resultados.innerHTML = '<div class="mensaje-carga">Error al buscar contenido. Intenta de nuevo.</div>';
+                }
+            }
+            
+            async mostrarResultados(resultadosData) {
+                this.resultados.innerHTML = '';
+                
+                // Filtrar solo items con imagen (películas o series)
+                const itemsFiltrados = resultadosData.filter(item => {
+                    return item.poster_path && (item.media_type === 'movie' || item.media_type === 'tv');
+                });
+                
+                if (itemsFiltrados.length === 0) {
+                    this.resultados.innerHTML = '<div class="mensaje-carga">No se encontraron resultados.</div>';
+                    return;
+                }
+                
+                // Obtener información de plataformas para cada item
+                for (let item of itemsFiltrados) {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'item';
+                    
+                    const titulo = item.title || item.name;
+                    const anio = item.release_date ? item.release_date.split('-')[0] : 
+                                 item.first_air_date ? item.first_air_date.split('-')[0] : 'Año desconocido';
+                    const tipo = item.media_type === 'movie' ? 'película' : 'serie';
+                    
+                    const portadaUrl = item.poster_path 
+                        ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
+                        : 'https://via.placeholder.com/120x180?text=No+Image';
+                    
+                    // Obtener plataformas de streaming
+                    const plataformas = await this.obtenerPlataformas(item.id, item.media_type);
+                    
+                    itemElement.innerHTML = `
+                        <div class="portada-contenedor">
+                            <img src="${portadaUrl}" alt="${titulo}" class="portada" onerror="this.src='https://via.placeholder.com/120x180?text=No+Image'">
+                        </div>
+                        <div class="info">
+                            <p class="titulo" title="${titulo}">${titulo}</p>
+                            <div class="detalles">${anio}</div>
+                            ${plataformas.length > 0 ? `
+                                <div class="plataformas">
+                                    ${plataformas.map(plataforma => 
+                                        `<span class="plataforma">${plataforma}</span>`
+                                    ).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <button class="solicitar-btn" 
+                                data-titulo="${titulo}" 
+                                data-anio="${anio}" 
+                                data-tipo="${tipo}"
+                                data-imagen="${portadaUrl}"
+                                data-plataformas="${plataformas.join(', ')}">
+                            Solicitar
+                        </button>
+                    `;
+                    
+                    this.resultados.appendChild(itemElement);
+                }
+                
+                // Agregar event listeners a los botones de solicitar
+                document.querySelectorAll('.solicitar-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.enviarPeticion(e));
+                });
+            }
+            
+            async obtenerPlataformas(id, tipo) {
+                try {
+                    const url = `https://api.themoviedb.org/3/${tipo}/${id}/watch/providers?api_key=${this.apiKey}`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.results && data.results.MX && data.results.MX.flatrate) {
+                        // Obtener nombres de plataformas disponibles en México
+                        return data.results.MX.flatrate.map(provider => provider.provider_name);
+                    }
+                    
+                    return [];
+                } catch (error) {
+                    console.error('Error al obtener plataformas:', error);
+                    return [];
+                }
+            }
+            
+            enviarPeticion(event) {
+                const boton = event.target;
+                const titulo = boton.getAttribute('data-titulo');
+                const anio = boton.getAttribute('data-anio');
+                const tipo = boton.getAttribute('data-tipo');
+                const imagen = boton.getAttribute('data-imagen');
+                const plataformas = boton.getAttribute('data-plataformas');
+                
+                let mensaje = `¡Hola! Quiero solicitar esta ${tipo}:
+
+*${titulo} (${anio})*
+
+${imagen}`;
+
+                // Agregar información de plataformas si está disponible
+                if (plataformas && plataformas.length > 0) {
+                    mensaje += `
+
+*Plataformas disponibles:* ${plataformas}`;
+                }
+                
+                const urlWhatsApp = `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(mensaje)}`;
+                
+                window.open(urlWhatsApp, '_blank');
+            }
+        }
+
+        // Inicializar panel de peticiones cuando el DOM esté cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            new PeticionesPanel();
+        });
+    </script>
+</body>
+</html>
