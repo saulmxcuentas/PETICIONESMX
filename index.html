@@ -117,6 +117,174 @@
             margin-top: 15px;
         }
 
+        /* Panel de autenticación */
+        .auth-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-box {
+            background: var(--dark-color);
+            border-radius: var(--radius-large);
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--light-color);
+            font-size: 1.5rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-medium);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light-color);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--emby-primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(82, 181, 75, 0.2);
+        }
+
+        .auth-btn {
+            background: linear-gradient(90deg, var(--emby-primary), var(--jellyfin-primary));
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius-medium);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(82, 181, 75, 0.3);
+        }
+
+        .auth-btn:disabled {
+            background: var(--gray-color);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Panel de usuario */
+        .user-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: var(--radius-medium);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--dark-color);
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            margin-top: 10px;
+            min-width: 200px;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: none;
+            border: none;
+            color: var(--light-color);
+            text-align: left;
+            cursor: pointer;
+            border-radius: var(--radius-small);
+            transition: var(--transition);
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         /* Panel de peticiones */
         .peticiones-btn {
             background: linear-gradient(90deg, var(--emby-primary), var(--jellyfin-primary));
@@ -292,6 +460,11 @@
 
         .solicitar-btn:hover {
             opacity: 0.9;
+        }
+
+        .solicitar-btn:disabled {
+            background: var(--gray-color);
+            cursor: not-allowed;
         }
 
         .mensaje-carga {
@@ -630,6 +803,55 @@
             font-weight: 600;
         }
 
+        /* Notificaciones */
+        .notifications-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+        }
+
+        .notification {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow);
+            animation: slideInRight 0.3s ease;
+            color: white;
+        }
+
+        .notification.success {
+            background: var(--emby-primary);
+        }
+
+        .notification.error {
+            background: var(--jellyfin-accent);
+        }
+
+        .notification.warning {
+            background: var(--jellyfin-secondary);
+            color: var(--darker-color);
+        }
+
+        .notification.info {
+            background: var(--jellyfin-primary);
+        }
+
+        .close-notification {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+
         /* Animación de carga */
         .loading {
             display: inline-block;
@@ -656,6 +878,22 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         /* Scrollbar */
@@ -696,6 +934,14 @@
             
             :root {
                 --radius: 320px; /* Ajustado */
+            }
+            
+            .user-panel {
+                position: relative;
+                top: auto;
+                right: auto;
+                justify-content: center;
+                margin-bottom: 20px;
             }
         }
 
@@ -784,6 +1030,10 @@
             .estreno-fecha {
                 font-size: 0.6rem; /* Reducido aún más en móvil */
             }
+            
+            .auth-box {
+                padding: 20px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -850,8 +1100,41 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Contenedor de autenticación -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-box">
+            <!-- Formulario de inicio de sesión -->
+            <div id="loginForm">
+                <h2><i class="fas fa-sign-in-alt"></i> Ingresa tu Número</h2>
+                <div class="auth-form">
+                    <div class="form-group">
+                        <label for="phoneNumber">Número de Teléfono</label>
+                        <input type="tel" id="phoneNumber" class="form-input" placeholder="+52 123 456 7890" required>
+                    </div>
+                    <button class="auth-btn" id="loginBtn">Acceder</button>
+                </div>
+                <div class="auth-footer">
+                    <p>Tu número aparecerá en las peticiones que realices</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
+            <div class="user-panel">
+                <button class="user-btn" id="userBtn">
+                    <i class="fas fa-user"></i> <span id="userName">Ingresar</span>
+                </button>
+                <div class="user-menu hidden" id="userMenu">
+                    <div class="user-info">
+                        <span id="menuUserName">Usuario: No registrado</span>
+                    </div>
+                    <button class="menu-item" id="myRequestsBtn">Mis Peticiones</button>
+                    <button class="menu-item" id="logoutBtn">Cerrar Sesión</button>
+                </div>
+            </div>
+            
             <h1><i class="fas fa-film"></i> Peticiones de Contenido</h1>
             <p>Busca y solicita películas y series para agregar a nuestro catálogo</p>
         </div>
@@ -913,11 +1196,269 @@
         </div>
     </div>
 
+    <!-- Contenedor de notificaciones -->
+    <div class="notifications-container" id="notificationsContainer"></div>
+
     <script>
+        // Clase para manejar notificaciones
+        class NotificationManager {
+            constructor() {
+                this.container = document.getElementById('notificationsContainer');
+            }
+            
+            show(message, type = 'info', duration = 5000) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                let icon = 'fa-info-circle';
+                if (type === 'success') icon = 'fa-check-circle';
+                if (type === 'error') icon = 'fa-exclamation-circle';
+                if (type === 'warning') icon = 'fa-exclamation-triangle';
+                
+                notification.innerHTML = `
+                    <i class="fas ${icon}"></i>
+                    <span>${message}</span>
+                    <button class="close-notification">×</button>
+                `;
+                
+                this.container.appendChild(notification);
+                
+                // Cerrar notificación al hacer clic en la X
+                notification.querySelector('.close-notification').addEventListener('click', () => {
+                    this.remove(notification);
+                });
+                
+                // Auto-eliminar después del tiempo especificado
+                if (duration > 0) {
+                    setTimeout(() => {
+                        this.remove(notification);
+                    }, duration);
+                }
+                
+                return notification;
+            }
+            
+            remove(notification) {
+                notification.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }
+        }
+
+        // Clase para manejar la autenticación
+        class AuthManager {
+            constructor() {
+                this.notifications = new NotificationManager();
+                this.authContainer = document.getElementById('authContainer');
+                this.phoneNumberInput = document.getElementById('phoneNumber');
+                this.loginBtn = document.getElementById('loginBtn');
+                
+                this.isAuthenticated = false;
+                this.userData = null;
+                
+                this.init();
+            }
+            
+            init() {
+                // Verificar si ya hay una sesión activa
+                this.checkExistingSession();
+                
+                // Configurar event listeners
+                this.loginBtn.addEventListener('click', () => this.login());
+                
+                // Permitir cerrar el modal haciendo clic fuera
+                this.authContainer.addEventListener('click', (e) => {
+                    if (e.target === this.authContainer && !this.isAuthenticated) {
+                        // No permitir cerrar si no está autenticado
+                        this.notifications.show('Debes ingresar tu número para continuar', 'warning');
+                    }
+                });
+
+                // Permitir enviar con Enter
+                this.phoneNumberInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.login();
+                    }
+                });
+            }
+            
+            checkExistingSession() {
+                const savedSession = localStorage.getItem('userSession');
+                if (savedSession) {
+                    try {
+                        const sessionData = JSON.parse(savedSession);
+                        // Verificar si la sesión no ha expirado (30 días)
+                        const sessionTime = new Date(sessionData.timestamp);
+                        const currentTime = new Date();
+                        const diffTime = Math.abs(currentTime - sessionTime);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays <= 30) {
+                            this.userData = sessionData;
+                            this.isAuthenticated = true;
+                            this.hideAuth();
+                            this.updateUserInterface();
+                            this.notifications.show(`Bienvenido de nuevo, ${sessionData.phone}`, 'success');
+                        } else {
+                            // Sesión expirada
+                            localStorage.removeItem('userSession');
+                            this.showAuth();
+                        }
+                    } catch (error) {
+                        console.error('Error al cargar la sesión:', error);
+                        localStorage.removeItem('userSession');
+                        this.showAuth();
+                    }
+                } else {
+                    this.showAuth();
+                }
+            }
+            
+            async login() {
+                const phoneNumber = this.phoneNumberInput.value.trim();
+                
+                if (!phoneNumber) {
+                    this.notifications.show('Por favor ingresa tu número de teléfono', 'error');
+                    return;
+                }
+                
+                // Validación básica de número telefónico
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                if (!phoneRegex.test(phoneNumber.replace(/\s/g, ''))) {
+                    this.notifications.show('Por favor ingresa un número de teléfono válido', 'error');
+                    return;
+                }
+                
+                this.loginBtn.disabled = true;
+                this.loginBtn.textContent = 'Accediendo...';
+                
+                try {
+                    // Simular proceso de login
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    this.userData = {
+                        phone: phoneNumber,
+                        timestamp: new Date().toISOString(),
+                        sessionId: this.generateSessionId()
+                    };
+                    
+                    // Guardar sesión en localStorage
+                    localStorage.setItem('userSession', JSON.stringify(this.userData));
+                    localStorage.setItem('userRequests', JSON.stringify([]));
+                    
+                    this.isAuthenticated = true;
+                    this.hideAuth();
+                    this.updateUserInterface();
+                    this.notifications.show(`¡Bienvenido! Tu número ${phoneNumber} ha sido registrado`, 'success');
+                } catch (error) {
+                    this.notifications.show('Error al acceder. Intenta nuevamente.', 'error');
+                } finally {
+                    this.loginBtn.disabled = false;
+                    this.loginBtn.textContent = 'Acceder';
+                }
+            }
+            
+            generateSessionId() {
+                return 'session_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+            }
+            
+            showAuth() {
+                this.authContainer.classList.remove('hidden');
+                this.phoneNumberInput.focus();
+            }
+            
+            hideAuth() {
+                this.authContainer.classList.add('hidden');
+                this.phoneNumberInput.value = '';
+            }
+            
+            logout() {
+                this.isAuthenticated = false;
+                this.userData = null;
+                localStorage.removeItem('userSession');
+                this.updateUserInterface();
+                this.showAuth();
+                this.notifications.show('Sesión cerrada correctamente', 'info');
+            }
+            
+            updateUserInterface() {
+                const userName = document.getElementById('userName');
+                const menuUserName = document.getElementById('menuUserName');
+                const userBtn = document.getElementById('userBtn');
+                const userMenu = document.getElementById('userMenu');
+                
+                if (this.isAuthenticated && this.userData) {
+                    // Formatear número para mostrar
+                    const formattedPhone = this.formatPhoneNumber(this.userData.phone);
+                    userName.textContent = formattedPhone;
+                    menuUserName.textContent = `Tel: ${formattedPhone}`;
+                    
+                    // Mostrar menú de usuario al hacer clic
+                    userBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        userMenu.classList.toggle('hidden');
+                    });
+                    
+                    // Cerrar menú al hacer clic fuera
+                    document.addEventListener('click', () => {
+                        userMenu.classList.add('hidden');
+                    });
+                } else {
+                    userName.textContent = 'Ingresar';
+                    menuUserName.textContent = 'Usuario: No registrado';
+                }
+            }
+
+            formatPhoneNumber(phone) {
+                // Formato básico para números mexicanos
+                const cleaned = phone.replace(/\D/g, '');
+                if (cleaned.length === 10) {
+                    return `+52 ${cleaned.substring(0, 3)} ${cleaned.substring(3, 6)} ${cleaned.substring(6)}`;
+                }
+                return phone;
+            }
+            
+            isUserAuthenticated() {
+                return this.isAuthenticated;
+            }
+            
+            getUserData() {
+                return this.userData;
+            }
+
+            // Método para guardar peticiones
+            saveUserRequest(requestData) {
+                if (!this.isAuthenticated) return null;
+                
+                const requests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+                const request = {
+                    id: Date.now(),
+                    ...requestData,
+                    timestamp: new Date().toISOString(),
+                    userPhone: this.userData.phone
+                };
+                
+                requests.push(request);
+                localStorage.setItem('userRequests', JSON.stringify(requests));
+                
+                return request;
+            }
+
+            // Método para obtener peticiones del usuario
+            getUserRequests() {
+                if (!this.isAuthenticated) return [];
+                return JSON.parse(localStorage.getItem('userRequests') || '[]');
+            }
+        }
+
         // Clase para manejar el panel de peticiones
         class PeticionesPanel {
-            constructor() {
+            constructor(authManager) {
                 this.apiKey = 'e22418df765186e2208cf44bef9e3bd2';
+                this.authManager = authManager;
                 this.peticionesBtn = document.getElementById('peticionesBtn');
                 this.contenedorPeticiones = document.getElementById('contenedorPeticiones');
                 this.buscador = document.getElementById('buscador');
@@ -931,6 +1472,12 @@
             init() {
                 // Configurar eventos
                 this.peticionesBtn.addEventListener('click', () => {
+                    if (!this.authManager.isUserAuthenticated()) {
+                        this.authManager.notifications.show('Debes ingresar tu número para usar esta función', 'warning');
+                        this.authManager.showAuth();
+                        return;
+                    }
+                    
                     this.contenedorPeticiones.classList.toggle('active');
                     // Si se abre el panel, enfocar el buscador
                     if (this.contenedorPeticiones.classList.contains('active')) {
@@ -1024,7 +1571,7 @@
                         </div>
                         <div class="info">
                             <p class="titulo" title="${titulo}">${titulo}</p>
-                            <div class="detalles">${anio}</div>
+                            <div class="detalles">${anio} • ${tipo}</div>
                             ${plataformas.length > 0 ? `
                                 <div class="plataformas">
                                     ${plataformas.map(plataforma => 
@@ -1071,12 +1618,20 @@
             }
             
             enviarPeticion(event) {
+                if (!this.authManager.isUserAuthenticated()) {
+                    this.authManager.notifications.show('Debes ingresar tu número para realizar peticiones', 'warning');
+                    this.authManager.showAuth();
+                    return;
+                }
+                
                 const boton = event.target;
                 const titulo = boton.getAttribute('data-titulo');
                 const anio = boton.getAttribute('data-anio');
                 const tipo = boton.getAttribute('data-tipo');
                 const imagen = boton.getAttribute('data-imagen');
                 const plataformas = boton.getAttribute('data-plataformas');
+                
+                const userData = this.authManager.getUserData();
                 
                 let mensaje = `¡Hola! Quiero solicitar esta ${tipo}:
 
@@ -1091,9 +1646,38 @@ ${imagen}`;
 *Plataformas disponibles:* ${plataformas}`;
                 }
                 
+                // Agregar información del usuario
+                mensaje += `
+
+*Solicitado por:* ${userData.phone}
+*Fecha:* ${new Date().toLocaleDateString('es-MX')}`;
+
+                // Guardar la petición en el historial
+                const requestData = {
+                    titulo: titulo,
+                    anio: anio,
+                    tipo: tipo,
+                    imagen: imagen,
+                    plataformas: plataformas,
+                    estado: 'pendiente'
+                };
+                
+                const savedRequest = this.authManager.saveUserRequest(requestData);
+                
                 const urlWhatsApp = `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(mensaje)}`;
                 
                 window.open(urlWhatsApp, '_blank');
+                
+                this.authManager.notifications.show(`Petición enviada: ${titulo}`, 'success');
+                
+                // Mostrar confirmación adicional
+                setTimeout(() => {
+                    this.authManager.notifications.show(
+                        `Tu petición de "${titulo}" ha sido registrada con el número ${userData.phone}`, 
+                        'info', 
+                        6000
+                    );
+                }, 2000);
             }
         }
 
@@ -1662,8 +2246,26 @@ ${imagen}`;
 
         // Inicializar componentes cuando el DOM esté cargado
         document.addEventListener('DOMContentLoaded', function() {
-            new PeticionesPanel();
-            new Carrusel3D();
+            const authManager = new AuthManager();
+            const peticionesPanel = new PeticionesPanel(authManager);
+            const carrusel3D = new Carrusel3D();
+            
+            // Configurar botón de cerrar sesión
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                authManager.logout();
+            });
+            
+            // Configurar botón de mis peticiones
+            document.getElementById('myRequestsBtn').addEventListener('click', () => {
+                const requests = authManager.getUserRequests();
+                if (requests.length === 0) {
+                    authManager.notifications.show('No tienes peticiones realizadas', 'info');
+                } else {
+                    authManager.notifications.show(`Tienes ${requests.length} peticiones realizadas`, 'info');
+                    // Aquí podrías mostrar un modal con el historial de peticiones
+                    console.log('Historial de peticiones:', requests);
+                }
+            });
         });
     </script>
 </body>
